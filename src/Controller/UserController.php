@@ -26,10 +26,6 @@ class UserController extends AbstractController
         $data['users'] = $db->getRepository(User::class, $user)->findAll();
         $data['roles'] = $db->getRepository(Role::class, $user)->findAll();
        
-        
-        $data['userrole'] = $d->createQueryBuilder("SELECT * FROM Role");
-        //$data['userrole'] = $db->getRepository()
-
         return $this->render('user/liste.html.twig', $data);
     }
 
