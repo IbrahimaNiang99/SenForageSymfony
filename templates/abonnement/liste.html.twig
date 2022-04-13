@@ -1,0 +1,82 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Liste des abonnements</h4>
+        </div>
+      {% if (not is_granted('ROLE_GESCOMPTEUR')) %}
+        <div class="col-md-3 offset-5">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Créer un abonnement</button>
+        </div>
+      {% endif %}
+    </div>
+</div>
+
+
+<div class="container mt-2">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Numéro</th>
+            <th scope="col">Nom client</th>
+            <th scope="col">Date d'abonnement</th>
+            <th scope="col">Description</th>
+
+            {% if (not is_granted('ROLE_GESCOMPTEUR')) %}
+            <th scope="col">Modifier</th>
+            <th scope="col">Supprimer</th>
+            {% endif %}
+            </tr>
+        </thead>
+    <tbody>
+    {% for a in abonnements %}
+        <tr>
+        <th scope="row">{{a.id}}</th>
+        <td>{{a.clients}}</td>
+        <td>{{a.dateAbon|date('d/m/Y')}}</td>
+        <td>{{a.description}}</td>
+        {% if (not is_granted('ROLE_GESCOMPTEUR')) %}
+        <td><a href="#" class="btn btn-warning"> <i class="fa fa-edit"></i>   </a></td>
+        <td><a href="#" class="btn btn-danger">  <i class="fa fa-trash"></i>    </a></td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Nouvel abonnement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {# <form method="post"> #}
+            {{ form(form) }}
+          {# <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div> #}
+
+        {# </form> #}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

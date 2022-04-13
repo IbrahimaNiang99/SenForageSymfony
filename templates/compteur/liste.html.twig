@@ -1,0 +1,73 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <h4>Liste des compteurs</h4>
+        </div>
+        <div class="col-md-2 offset-7">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-plus"></i> Ajouter client</button>
+        </div>
+    </div>
+</div>
+
+{# {% if detailsAttr is defined %}  #}
+
+{# {% endif %} #}
+<div class="row ml-1">
+     
+{% for cpt in compteurs %}
+  <div class="col-sm-4 mt-3">
+    <div class="card">
+      <div class="card-header">
+        <h5> <i class="fa fa-tint"></i> Compteur N° : {{cpt.numero}} </h5>
+      </div>
+      <div class="card-body">
+        <p class="">Cumul des consommations : {{ cpt.cumul}} Littres</p>
+        <p class="">Attribuer : {% if cpt.attribution %} Oui  
+
+            <p><a href="{{ path ('app_compteurliste', {'id': cpt.id } )}}" data-toggle="modal" data-target="#exampleModal" class="btn btn-warning">Details du compteur</a></p>
+
+            {% else  %} Non attribuer  
+        
+            {% endif %}
+        
+        </p>
+        <h5 class="">... </h5>
+
+        {% if not cpt.attribution %}<a href="#" class="btn btn-primary">Attribuer</a>{% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Détails du compteur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
