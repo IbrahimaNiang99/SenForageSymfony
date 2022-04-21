@@ -8,18 +8,15 @@
         <div class="col-md-3">
             <h4>Liste des compteurs</h4>
         </div>
-        <div class="col-md-2 offset-7">
+        <div class="col-md-3 offset-6">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-plus"></i> Ajouter client</button>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-plus"></i> Ajouter un compteur</button>
         </div>
     </div>
 </div>
 
-{# {% if detailsAttr is defined %}  #}
-
-{# {% endif %} #}
 <div class="row ml-1">
-     
+       
 {% for cpt in compteurs %}
   <div class="col-sm-4 mt-3">
     <div class="card">
@@ -39,7 +36,10 @@
         </p>
         <h5 class="">... </h5>
 
-        {% if not cpt.attribution %}<a href="#" class="btn btn-primary">Attribuer</a>{% endif %}
+        {% if not cpt.attribution %}
+            <a href="{{ path ("app_getIdCompteur", {'id': cpt.id } )}}" class="btn btn-primary"  data-toggle="modal" data-target="#attributionCompteur" >Attribuer à un client</a> 
+        {% endif %}
+      
       </div>
     </div>
   </div>
@@ -62,6 +62,29 @@
       </div>
       <div class="modal-body">
       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="attributionCompteur" role="dialog" aria-labelledby="attributionCompteur" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attributionCompteur">Attribution du compteur N°  </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+           {% if id is defined %} 
+          {{ id }}
+        {% endif %}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>

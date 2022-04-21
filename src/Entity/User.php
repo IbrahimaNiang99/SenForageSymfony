@@ -4,12 +4,12 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -23,14 +23,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
-    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
-    private $roles = [];
-
-    #[ORM\Column(type: 'string', length: 100)]
-    private $prenom;
-
     #[ORM\Column(type: 'string', length: 30)]
     private $nom;
+
+    #[ORM\Column(type: 'string', length: 40)]
+    private $prenom;
+
+    #[ORM\ManyToMany(targetEntity: Role::class)]
+    private $roles = [];
 
     public function __construct()
     {
@@ -70,12 +70,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = array();
-
-        foreach($this->roles as $r){
+        // guarantee every user at least has ROLE_USER
+        foreach ($this->roles as $r) {
             $roles[] = $r->getNom();
         }
-        // guarantee every user at least has ROLE_USER
-        //$roles[] = 'ROLE_ADMIN';
 
         return array_unique($roles);
     }
@@ -111,18 +109,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function addRole(Role $roles): self
+    public function getNom(): ?string
     {
-        if (!$this->role->contains($roles)) {
-            $this->roles[] = $roles;
-        }
-
-        return $this;
+        return $this->nom;
     }
 
-    public function removeRole(Role $roles): self
+    public function setNom(string $nom): self
     {
-        $this->role->removeElement($roles);
+        $this->nom = $nom;
 
         return $this;
     }
@@ -139,14 +133,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getNom(): ?string
+    public function addRole(Role $role): self
     {
-        return $this->nom;
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
     }
 
-    public function setNom(string $nom): self
+    public function removeRole(Role $role): self
     {
-        $this->nom = $nom;
+        $this->roles->removeElement($role);
 
         return $this;
     }

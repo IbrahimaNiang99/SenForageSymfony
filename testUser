@@ -1,0 +1,230 @@
+
+
+namespace App\Controller;
+
+use App\Entity\Role;
+use App\Entity\User;
+use App\Form\UserType;
+use Doctrine\Persistence\ManagerRegistry ;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\UserRepository;
+
+class UserController extends AbstractController
+{
+    #[Route('/userliste', name: 'app_userliste')]
+    public function index(ManagerRegistry $doctrine, UserRepository $d): Response
+    {
+        $user = new User();
+        $db = $doctrine->getManager();
+
+        $form = $this->createForm(UserType::class, $user, array('action'=>$this->generateUrl('app_useradd')));
+        $data['form'] = $form->createView();
+
+        $data['users'] = $db->getRepository(User::class, $user)->findAll();
+        $data['roles'] = $db->getRepository(Role::class, $user)->findAll();
+       
+        return $this->render('user/liste.html.twig', $data);
+    }
+
+    #[Route('/useradd', name: 'app_useradd')]
+    public function add(ManagerRegistry $doctrine, Request $request): Response
+    {
+        $user = new User();
+        $db = $doctrine->getManager();
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ( $form->isSubmitted() && ($form->isValid())) {
+            $user = $form->getData();
+            //$user->setUser($this->getUser());
+            //$r = $db->getRepository(Role::class)->find($user->getRole()->getId());
+            $mdp = "Passer123";
+            $mdp_hashed = password_hash($mdp, PASSWORD_DEFAULT);
+            $user->setPassword($mdp_hashed);
+            $db->persist($user);
+            $db->flush();
+        }
+        
+        return $this->redirectToRoute('app_userliste');
+    }
+}
+
+
+
+
+
+
+
+{% extends 'accueil.html.twig' %}
+{% block title %}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <h4>Liste des utilisateurs</h4>
+        </div>
+
+        <div class="col-md-3 offset-3">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#attrole" data-whatever="@mdo"><i class="fa fa-user"></i> Attribuer roles</button>
+        </div>
+
+        <div class="col-md-3">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"><i class="fa fa-plus"></i> Ajouter un utilisateur</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container mt-2">
+    <table class="table table-bordered table-dark">
+    <thead>
+        <tr>
+        <th scope="col">Prénom & Nom</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">Modifier</th>
+        <th scope="col">Supprimer</th>
+        <th scope="col">Supprimer</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for u in users %}
+        <tr>
+        <th >{{u.prenom}} {{u.nom}}</th>
+        <td >{{u.email}}</td>
+        <td >ROLES</td>
+        <td ><a href="#" class="btn btn-warning"> <i class="fa fa-edit"></i>   </a></td>
+        <td ><a href="#" class="btn btn-danger"> <i class="fa fa-trash"></i>   </a></td>
+        <td ><a href="#" class="btn btn-danger"> <i class="fa fa-trash"></i>   </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Nouveau utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ form(form) }}
+        {# {{ form(form) }} #}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="attrole" tabindex="-1" role="dialog" aria-labelledby="attrole" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attrole">Attribution des rôles</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+
+
+
+
+
+
+
+
+
+<!-- <!doctype html>
+<html lang="en">
+  <head>
+  	<title>Senforage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{{('login/css/style.css')}}">
+	</head>
+	<body>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-7 col-lg-5">
+					<div class="wrap">
+						<div class="img" style="background-image: url({{('login/images/bg-1.jpg')}});"></div>
+						<div class="login-wrap p-4 p-md-5">
+
+			      	        <div class="d-flex">
+			      		        <div class="w-100"> <h3 class="mb-4">Sén Forage</h3> </div>
+			      	        </div>
+
+							<form method="post" class="signin-form">
+
+			      		        <div class="form-group mt-3">
+			      			        <input type="email" name="email" id="inputEmail" autocomplete="email" required autofocus class="form-control" required>
+			      			        <label class="form-control-placeholder" for="username">Email</label>
+			      		        </div>
+		                        <div class="form-group">
+		                            <input id="password-field" type="password" name="password" id="inputPassword" autocomplete="current-password" required class="form-control" required>
+		                            <label class="form-control-placeholder" for="password">Password</label>
+		                            <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+		                        </div>
+                                    {# {% if error %}
+                                        <div class="alert alert-danger">Mauvais identifiants</div>
+                                    {% endif %} #}
+
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+		                        <div class="form-group">
+		            	            <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
+		                        </div>
+                                
+		                    
+                            </form>
+		                </div>
+		            </div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+    <script src="{{('login/js/jquery.min.js')}} "></script>
+    <script src="{{('login/js/popper.js')}}"></script>
+    <script src="{{('login/js/bootstrap.min.js')}}"></script>
+    <script src="{{('login/js/main.js')}}"></script>
+
+</body>
+</html> -->

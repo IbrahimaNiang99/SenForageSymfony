@@ -17,8 +17,19 @@ class CompteurController extends AbstractController
         $compteur = new Compteur();
         $db = $doctrine->getManager();
         $data['compteurs'] = $db->getRepository(Compteur::class, $compteur)->findAll();
-        // $data['detailattr'] = c
-        
         return $this->render('compteur/liste.html.twig', $data);
+    }
+
+    #[Route('/getIdCompteur', name: 'app_getIdCompteur')]
+    public function getIdCompteur(ManagerRegistry $doctrine): Response
+    {
+        
+            $id = $_GET['id'];
+            //echo $id; die();
+            $compteur = new Compteur();
+            $db = $doctrine->getManager();
+            $data['compteurs'] = $db->getRepository(Compteur::class, $compteur)->findAll();
+            $data['id'] = $id;
+            return $this->render('compteur/liste.html.twig', $data);
     }
 }

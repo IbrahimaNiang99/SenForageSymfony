@@ -2,20 +2,19 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Persistence\ManagerRegistry ;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
-use Doctrine\Persistence\ManagerRegistry ;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\UserRepository;
 
 class UserController extends AbstractController
 {
     #[Route('/userliste', name: 'app_userliste')]
-    public function index(ManagerRegistry $doctrine, UserRepository $d): Response
+    public function index(ManagerRegistry $doctrine): Response
     {
         $user = new User();
         $db = $doctrine->getManager();
