@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Abonnement;
@@ -20,11 +19,8 @@ class AbonnementController extends AbstractController
         $form = $this->createForm(AbonnementType::class, $abon, array('action'=>$this->generateUrl('app_abonnement_add')));
         $data['form'] = $form->createView();
         $data['abonnements'] = $db->getRepository(Abonnement::class)->findAll();
-
         return $this->render('abonnement/liste.html.twig', $data);
     }
-
-
 
     #[Route('/abonnementadd', name: 'app_abonnement_add')]
     public function add(ManagerRegistry $doctrine, Request $request): Response

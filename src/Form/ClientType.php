@@ -23,7 +23,6 @@ class ClientType extends AbstractType
             ->add('users', HiddenType::class)
             ->add('villages', EntityType::class, array( 'class'=>Village::class, 'attr'=>array('class'=>'form-control mb-3','require'=>'require')))
             ->add('Valider', SubmitType::class, array("label"=>"Ajouter", "attr"=>array("class"=>"btn btn-success mt-4")))
-        
             ;
     }
 

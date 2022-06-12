@@ -39,7 +39,7 @@
         <tr>
         <th scope="row">{{a.id}}</th>
         <td>{{a.clients}}</td>
-        <td>{{a.dateAbon|date('d/m/Y')}}</td>
+        <td>{{a.dateAbon|date('d/m/Y') }}</td>
         <td>{{a.description}}</td>
         {% if (not is_granted('ROLE_GESCOMPTEUR')) %}
         <td><a href="#" class="btn btn-warning"> <i class="fa fa-edit"></i>   </a></td>
